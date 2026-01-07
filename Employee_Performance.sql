@@ -1,37 +1,53 @@
--- 1
+
+-- ---------------------------------------------------------------
+-- 1. Select the employee database
+-- ---------------------------------------------------------------
 USE employee;
 
--- 3
+
+-- ---------------------------------------------------------------
+-- 2. Fetch basic employee details with department alias
+-- ---------------------------------------------------------------
 SELECT
     EMP_ID,
     FIRST_NAME,
     LAST_NAME,
     GENDER,
-    DEPT AS 'DEPARTMENT'
+    DEPT AS DEPARTMENT
 FROM
     emp_record_table;
 
--- 4
+
+-- ---------------------------------------------------------------
+-- 3. Categorize employees based on performance rating
+-- ---------------------------------------------------------------
 SELECT
     EMP_ID,
     FIRST_NAME,
     LAST_NAME,
     GENDER,
-    DEPT AS 'DEPARTMENT',
+    DEPT AS DEPARTMENT,
     CASE
         WHEN EMP_RATING < 2 THEN 'Rating below 2'
-        WHEN EMP_RATING > 4 THEN 'Rating Above 4'
+        WHEN EMP_RATING > 4 THEN 'Rating above 4'
         WHEN EMP_RATING BETWEEN 2 AND 4 THEN 'Rating between 2 and 4'
-    END AS 'EMPLOYEE_RATING'
+    END AS EMPLOYEE_RATING
 FROM
     emp_record_table;
 
--- 5
+
+-- ---------------------------------------------------------------
+-- 4. Display employee full name (trimmed)
+-- ---------------------------------------------------------------
 SELECT
-    CONCAT(TRIM(FIRST_NAME), ' ', TRIM(LAST_NAME)) AS 'NAME'
+    CONCAT(TRIM(FIRST_NAME), ' ', TRIM(LAST_NAME)) AS NAME
 FROM
     emp_record_table;
 
+
+-- ---------------------------------------------------------------
+-- 5. Fetch employees working in the Finance department
+-- ---------------------------------------------------------------
 SELECT
     EMP_ID,
     FIRST_NAME,
@@ -43,7 +59,10 @@ FROM
 WHERE
     DEPT = 'Finance';
 
--- 6
+
+-- ---------------------------------------------------------------
+-- 6. Find number of reporters for each manager
+-- ---------------------------------------------------------------
 SELECT
     e.EMP_ID,
     e.FIRST_NAME,
@@ -61,7 +80,10 @@ GROUP BY
     e.LAST_NAME,
     e.ROLE;
 
--- 7
+
+-- ---------------------------------------------------------------
+-- 7. Fetch employees from Healthcare and Finance departments
+-- ---------------------------------------------------------------
 SELECT
     EMP_ID,
     FIRST_NAME,
@@ -86,7 +108,10 @@ FROM
 WHERE
     DEPT = 'Finance';
 
--- 8
+
+-- ---------------------------------------------------------------
+-- 8. Fetch employees with their department's maximum rating
+-- ---------------------------------------------------------------
 SELECT
     e.EMP_ID,
     e.FIRST_NAME,
@@ -108,7 +133,10 @@ JOIN (
 ) d
 ON e.DEPT = d.DEPT;
 
--- 9
+
+-- ---------------------------------------------------------------
+-- 9. Fetch salaries greater than 6000
+-- ---------------------------------------------------------------
 SELECT
     SALARY
 FROM
@@ -116,9 +144,10 @@ FROM
 WHERE
     SALARY > 6000;
 
-SELECT * FROM high_salary_employees_by_country;
 
--- 10
+-- ---------------------------------------------------------------
+-- 10. Rank employees based on experience (descending order)
+-- ---------------------------------------------------------------
 SELECT
     EMP_ID,
     FIRST_NAME,
@@ -130,7 +159,10 @@ SELECT
 FROM
     emp_record_table;
 
--- 11
+
+-- ---------------------------------------------------------------
+-- 11. Create a view for experienced employees with high salaries
+-- ---------------------------------------------------------------
 CREATE VIEW high_salary_employees_by_country AS
 SELECT
     EMP_ID,
@@ -146,10 +178,13 @@ FROM
 WHERE
     EXP > 3;
 
--- 12
+
+-- ---------------------------------------------------------------
+-- 12. Fetch employees having more than 10 years of experience
+-- ---------------------------------------------------------------
 SELECT
     EMP_ID,
-    CONCAT(TRIM(FIRST_NAME), ' ', TRIM(LAST_NAME)) AS 'NAME',
+    CONCAT(TRIM(FIRST_NAME), ' ', TRIM(LAST_NAME)) AS NAME,
     ROLE,
     EXP
 FROM
@@ -164,7 +199,10 @@ WHERE
             EXP > 10
     );
 
--- 13
+
+-- ---------------------------------------------------------------
+-- 13. Stored procedure to get experienced employees
+-- ---------------------------------------------------------------
 DELIMITER //
 
 CREATE PROCEDURE GetExperiencedEmployees()
@@ -185,9 +223,13 @@ END //
 
 DELIMITER ;
 
+-- Execute the stored procedure
 CALL GetExperiencedEmployees();
 
--- 14
+
+-- ---------------------------------------------------------------
+-- 14. Function to assign standard role based on experience
+-- ---------------------------------------------------------------
 DELIMITER //
 
 CREATE FUNCTION GetStandardRole(exp INT)
@@ -198,13 +240,13 @@ BEGIN
 
     IF exp <= 2 THEN
         SET standard_role = 'JUNIOR DATA SCIENTIST';
-    ELSEIF exp > 2 AND exp <= 5 THEN
+    ELSEIF exp <= 5 THEN
         SET standard_role = 'ASSOCIATE DATA SCIENTIST';
-    ELSEIF exp > 5 AND exp <= 10 THEN
+    ELSEIF exp <= 10 THEN
         SET standard_role = 'SENIOR DATA SCIENTIST';
-    ELSEIF exp > 10 AND exp <= 12 THEN
+    ELSEIF exp <= 12 THEN
         SET standard_role = 'LEAD DATA SCIENTIST';
-    ELSEIF exp > 12 AND exp <= 16 THEN
+    ELSEIF exp <= 16 THEN
         SET standard_role = 'MANAGER';
     ELSE
         SET standard_role = 'UNDEFINED';
@@ -215,6 +257,10 @@ END //
 
 DELIMITER ;
 
+
+-- ---------------------------------------------------------------
+-- 15. Validate assigned role vs standard role
+-- ---------------------------------------------------------------
 SELECT
     EMP_ID,
     FIRST_NAME,
@@ -229,16 +275,28 @@ SELECT
 FROM
     Data_science_team;
 
--- 15
+
+-- ---------------------------------------------------------------
+-- 16. Create index on FIRST_NAME for performance optimization
+-- ---------------------------------------------------------------
 CREATE INDEX idx_first_name
 ON emp_record_table(FIRST_NAME(20));
 
+
+-- ---------------------------------------------------------------
+-- 17. Analyze query execution using EXPLAIN
+-- ---------------------------------------------------------------
 EXPLAIN
 SELECT *
-FROM emp_record_table
-WHERE FIRST_NAME = 'Eric';
+FROM
+    emp_record_table
+WHERE
+    FIRST_NAME = 'Eric';
 
--- 16
+
+-- ---------------------------------------------------------------
+-- 18. Calculate employee bonus based on salary and rating
+-- ---------------------------------------------------------------
 SELECT
     EMP_ID,
     FIRST_NAME,
@@ -249,7 +307,10 @@ SELECT
 FROM
     emp_record_table;
 
--- 17
+
+-- ---------------------------------------------------------------
+-- 19. Calculate average salary by continent and country
+-- ---------------------------------------------------------------
 SELECT
     CONTINENT,
     COUNTRY,
